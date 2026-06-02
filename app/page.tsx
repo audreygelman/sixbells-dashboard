@@ -1,12 +1,17 @@
 import { getMockData } from '@/lib/mock-data'
+import { getShopifyEcommerce } from '@/lib/shopify'
 import { computeKpis } from '@/lib/kpis'
 import { KpiSection } from '@/components/KpiSection'
 import { GOALS } from '@/config/goals'
 
 export const revalidate = 3600
 
-export default function Dashboard() {
+export default async function Dashboard() {
   const data = getMockData()
+  const shopify = await getShopifyEcommerce()
+  if (shopify) {
+    data.ecommerce = shopify
+  }
   const kpis = computeKpis(data)
   const lastUpdated = new Date(data.lastUpdated).toLocaleString('en-US', {
     month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
