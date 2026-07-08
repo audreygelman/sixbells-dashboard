@@ -9,6 +9,7 @@ interface RevenueGoals {
 interface KpiSectionProps {
   title: string
   logo?: string
+  source?: string
   revenueGoals?: RevenueGoals
   metrics: KpiMetric[]
 }
@@ -21,7 +22,7 @@ function currentMonth(): string {
   return new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' })
 }
 
-export function KpiSection({ title, logo, revenueGoals, metrics }: KpiSectionProps) {
+export function KpiSection({ title, logo, source, revenueGoals, metrics }: KpiSectionProps) {
   return (
     <section>
       <div className="flex flex-col gap-2 mb-4">
@@ -35,6 +36,15 @@ export function KpiSection({ title, logo, revenueGoals, metrics }: KpiSectionPro
             <h2 className="text-sm font-semibold uppercase tracking-widest" style={{ color: '#1D371E' }}>
               {title}
             </h2>
+          )}
+
+          {source && (
+            <span
+              className="text-xs font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full"
+              style={{ color: '#1D371E', backgroundColor: '#FFFAF1', border: '1px solid #1D371E22', opacity: 0.85 }}
+            >
+              Data from {source}
+            </span>
           )}
         </div>
 

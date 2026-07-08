@@ -42,8 +42,8 @@ export default async function Dashboard() {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-8 flex flex-col gap-10">
-        <KpiSection title="Ecommerce" logo="/logo-shop.png" revenueGoals={{ gross: GOALS.shopifyGrossRevenue, net: GOALS.shopifyNetRevenue }} metrics={kpis.ecommerce} />
-        <KpiSection title="Email — Klaviyo" metrics={kpis.email} />
+        <KpiSection title="Ecommerce" logo="/logo-shop.png" source="Shopify" revenueGoals={{ gross: GOALS.shopifyGrossRevenue, net: GOALS.shopifyNetRevenue }} metrics={kpis.ecommerce} />
+        <KpiSection title="Email" logo="/logo-shop.png" source="Klaviyo" metrics={kpis.email} />
 
         {/*
           Hidden until real reporting is connected — currently mock data only.
