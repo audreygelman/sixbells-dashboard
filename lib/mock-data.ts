@@ -30,6 +30,11 @@ export function getMockData(): DashboardData {
       openRate: 41.5,
       clickRate: 2.4,
       revenue: 9200,
+      conversionRate: 1.8,
+      revenuePerRecipient: 0.12,
+      campaignsSent: 4,
+      newSubscribers: 80,
+      unsubscribes: 15,
     },
   }
 }
