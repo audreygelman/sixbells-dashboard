@@ -28,4 +28,9 @@ export const GOALS = {
   instagramFollowers: 10000,
   conversionRate: 3.5,    // percentage
   engagementRate: 4.0,    // percentage
+
+  // ── Email — Klaviyo ─────────────────────────
+  emailOpenRate: 45,      // percentage
+  emailClickRate: 3.0,    // percentage
+  emailRevenue: 12000,    // attributed revenue (USD)
 } as const

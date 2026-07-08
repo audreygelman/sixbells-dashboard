@@ -26,5 +26,10 @@ export function getMockData(): DashboardData {
       conversionRate: 2.8,
       engagementRate: 4.2,
     },
+    email: {
+      openRate: 41.5,
+      clickRate: 2.4,
+      revenue: 9200,
+    },
   }
 }

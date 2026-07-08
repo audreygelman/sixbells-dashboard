@@ -17,7 +17,7 @@ function metric(id: string, label: string, value: number, goal: number, format: 
 }
 
 export function computeKpis(data: DashboardData) {
-  const { ecommerce: e, hotel: h, restaurant: r, social: s } = data
+  const { ecommerce: e, hotel: h, restaurant: r, social: s, email: m } = data
   return {
     ecommerce: [
       metric('revenue',  'Revenue',         e.revenue, GOALS.shopifyRevenue,    'currency'),
@@ -37,6 +37,11 @@ export function computeKpis(data: DashboardData) {
       metric('followers',   'Followers',       s.followers,      GOALS.instagramFollowers, 'number'),
       metric('conversion',  'Conversion Rate', s.conversionRate, GOALS.conversionRate,     'percent'),
       metric('engagement',  'Engagement Rate', s.engagementRate, GOALS.engagementRate,     'percent'),
+    ],
+    email: [
+      metric('email-open',    'Open Rate',     m.openRate,  GOALS.emailOpenRate,  'percent'),
+      metric('email-click',   'Click Rate',    m.clickRate, GOALS.emailClickRate, 'percent'),
+      metric('email-revenue', 'Email Revenue', m.revenue,   GOALS.emailRevenue,   'currency'),
     ],
   }
 }
