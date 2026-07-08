@@ -19,7 +19,7 @@ function formatCurrency(value: number): string {
 }
 
 function currentMonth(): string {
-  return new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' })
+  return new Date().toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'America/New_York' })
 }
 
 export function KpiSection({ title, logo, source, revenueGoals, metrics }: KpiSectionProps) {
