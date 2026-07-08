@@ -34,8 +34,8 @@ export const GOALS = {
   emailClickRate: 3.0,           // percentage
   emailRevenue: 12000,           // attributed revenue (USD)
   emailCampaignsSent: 6,         // campaigns per month
-  emailConversionRate: 2,        // percentage
+  emailConversionRate: 0.1,      // percentage (orders per recipient)
   emailRevenuePerRecipient: 0.15, // USD per recipient
   emailNewSubscribers: 100,      // new email subscribers per month
-  emailUnsubscribesCeiling: 50,  // max acceptable unsubscribes (0 is ideal)
+  emailUnsubscribesCeiling: 150, // max acceptable unsubscribes (0 is ideal)
 } as const
