@@ -32,4 +32,9 @@ export interface DashboardData {
     conversionRate: number
     engagementRate: number
   }
+  email: {
+    openRate: number
+    clickRate: number
+    revenue: number
+  }
 }
