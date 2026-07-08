@@ -10,6 +10,9 @@ function formatValue(value: number, format: KpiMetric['format']): string {
   if (format === 'currency') {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value)
   }
+  if (format === 'currency-cents') {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)
+  }
   if (format === 'percent') return `${value}%`
   return new Intl.NumberFormat('en-US').format(value)
 }
@@ -37,13 +40,13 @@ export function KpiCard({ metric }: { metric: KpiMetric }) {
           {formatValue(metric.value, metric.format)}
         </p>
         <p className="text-sm mt-1" style={{ color: '#1D371E', opacity: 0.45 }}>
-          Goal: {formatValue(metric.goal, metric.format)}
+          {metric.inverse ? 'Ceiling' : 'Goal'}: {formatValue(metric.goal, metric.format)}
         </p>
       </div>
 
       <div>
         <div className="flex justify-between text-xs mb-1.5" style={{ color: '#1D371E', opacity: 0.5 }}>
-          <span>Progress to goal</span>
+          <span>{metric.inverse ? 'Headroom below ceiling' : 'Progress to goal'}</span>
           <span className="font-semibold" style={{ opacity: 1, color: '#1D371E' }}>{metric.percentToGoal}%</span>
         </div>
         <div className="h-1.5 w-full rounded-full" style={{ backgroundColor: '#EFE6CD' }}>
