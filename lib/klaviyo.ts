@@ -2,9 +2,11 @@
 // Klaviyo — email marketing performance (open rate, click rate,
 // attributed revenue) for the current month.
 //
-// Uses the Klaviyo Reporting API (Campaign Values Report), which
-// returns aggregate rates and conversion value directly:
+// Uses the Klaviyo Reporting API. Open/click rate come from the
+// Campaign (broadcast) Values Report; revenue sums campaigns AND
+// flows (automated emails) for total email-attributed revenue:
 //   https://developers.klaviyo.com/en/reference/query_campaign_values
+//   https://developers.klaviyo.com/en/reference/query_flow_values
 //
 // Auth: private API key via the `Authorization: Klaviyo-API-Key`
 // header. Set KLAVIYO_API_KEY in the environment.
@@ -18,7 +20,7 @@ interface MetricValuesResult {
   statistics: Record<string, number>
 }
 
-interface CampaignValuesResponse {
+interface ValuesReportResponse {
   data?: { attributes?: { results?: MetricValuesResult[] } }
 }
 
@@ -49,6 +51,39 @@ async function getConversionMetricId(key: string): Promise<string | null> {
   return (placedOrder ?? data[0]).id
 }
 
+// Fetch a Reporting API values report (campaign or flow) for this month
+// and return the per-grouping result rows.
+async function fetchValuesReport(
+  key: string,
+  reportType: 'campaign' | 'flow',
+  statistics: string[],
+  conversionMetricId: string,
+): Promise<MetricValuesResult[]> {
+  const res = await fetch(`${KLAVIYO_BASE}/${reportType}-values-reports/`, {
+    method: 'POST',
+    headers: klaviyoHeaders(key),
+    body: JSON.stringify({
+      data: {
+        type: `${reportType}-values-report`,
+        attributes: {
+          timeframe: { key: 'this_month' },
+          statistics,
+          conversion_metric_id: conversionMetricId,
+        },
+      },
+    }),
+  })
+
+  if (!res.ok) return []
+
+  const { data } = (await res.json()) as ValuesReportResponse
+  return data?.attributes?.results ?? []
+}
+
+function sumRevenue(results: MetricValuesResult[]): number {
+  return results.reduce((sum, r) => sum + (r.statistics.conversion_value ?? 0), 0)
+}
+
 export async function getKlaviyoEmail() {
   const key = process.env.KLAVIYO_API_KEY?.trim()
   if (!key) return null
@@ -57,38 +92,23 @@ export async function getKlaviyoEmail() {
     const conversionMetricId = await getConversionMetricId(key)
     if (!conversionMetricId) return null
 
-    const res = await fetch(`${KLAVIYO_BASE}/campaign-values-reports/`, {
-      method: 'POST',
-      headers: klaviyoHeaders(key),
-      body: JSON.stringify({
-        data: {
-          type: 'campaign-values-report',
-          attributes: {
-            timeframe: { key: 'this_month' },
-            statistics: ['open_rate', 'click_rate', 'conversion_value', 'recipients'],
-            conversion_metric_id: conversionMetricId,
-          },
-        },
-      }),
-    })
+    // Open/click rate come from campaigns; revenue sums campaigns + flows.
+    const [campaigns, flows] = await Promise.all([
+      fetchValuesReport(key, 'campaign', ['open_rate', 'click_rate', 'conversion_value', 'recipients'], conversionMetricId),
+      fetchValuesReport(key, 'flow', ['conversion_value'], conversionMetricId),
+    ])
 
-    if (!res.ok) return null
+    if (!campaigns.length) return null
 
-    const { data } = (await res.json()) as CampaignValuesResponse
-    const results = data?.attributes?.results ?? []
-    if (!results.length) return null
-
-    // Aggregate across campaigns: sum revenue, and weight the rates by
-    // recipient count so a big send counts more than a tiny one.
-    let revenue = 0
+    // Aggregate across campaigns: weight the rates by recipient count so a
+    // big send counts more than a tiny one.
     let recipients = 0
     let openWeighted = 0
     let clickWeighted = 0
 
-    for (const r of results) {
+    for (const r of campaigns) {
       const s = r.statistics
       const n = s.recipients ?? 0
-      revenue += s.conversion_value ?? 0
       recipients += n
       openWeighted += (s.open_rate ?? 0) * n
       clickWeighted += (s.click_rate ?? 0) * n
@@ -96,6 +116,7 @@ export async function getKlaviyoEmail() {
 
     const openRate = recipients > 0 ? (openWeighted / recipients) * 100 : 0
     const clickRate = recipients > 0 ? (clickWeighted / recipients) * 100 : 0
+    const revenue = sumRevenue(campaigns) + sumRevenue(flows)
 
     return {
       openRate: Math.round(openRate * 10) / 10,
