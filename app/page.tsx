@@ -22,6 +22,7 @@ export default async function Dashboard() {
   const kpis = computeKpis(data)
   const lastUpdated = new Date(data.lastUpdated).toLocaleString('en-US', {
     month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+    timeZone: 'America/New_York', timeZoneName: 'short',
   })
 
   return (
@@ -42,7 +43,7 @@ export default async function Dashboard() {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-8 flex flex-col gap-10">
-        <KpiSection title="Ecommerce" logo="/logo-shop.png" source="Shopify" revenueGoals={{ gross: GOALS.shopifyGrossRevenue, net: GOALS.shopifyNetRevenue }} metrics={kpis.ecommerce} />
+        <KpiSection title="Store" logo="/logo-shop.png" source="Shopify" revenueGoals={{ gross: GOALS.shopifyGrossRevenue, net: GOALS.shopifyNetRevenue }} metrics={kpis.ecommerce} />
         <KpiSection title="Email" logo="/logo-shop.png" source="Klaviyo" metrics={kpis.email} />
 
         {/*

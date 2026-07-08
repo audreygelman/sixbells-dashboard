@@ -19,34 +19,36 @@ function formatCurrency(value: number): string {
 }
 
 function currentMonth(): string {
-  return new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' })
+  return new Date().toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'America/New_York' })
 }
 
 export function KpiSection({ title, logo, source, revenueGoals, metrics }: KpiSectionProps) {
   return (
     <section>
       <div className="flex flex-col gap-2 mb-4">
-        <div className="flex items-center gap-3">
-          {logo ? (
-            <div className="rounded-2xl p-3 flex items-center justify-center" style={{ backgroundColor: '#FFFAF1', border: '1px solid #1D371E22' }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={logo} alt={title} className="h-16 w-auto object-contain" />
-            </div>
-          ) : (
-            <h2 className="text-sm font-semibold uppercase tracking-widest" style={{ color: '#1D371E' }}>
-              {title}
-            </h2>
-          )}
+        <h2 className="text-sm font-semibold uppercase tracking-widest" style={{ color: '#1D371E' }}>
+          {title}
+        </h2>
 
-          {source && (
-            <span
-              className="text-xs font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full"
-              style={{ color: '#1D371E', backgroundColor: '#FFFAF1', border: '1px solid #1D371E22', opacity: 0.85 }}
-            >
-              Data from {source}
-            </span>
-          )}
-        </div>
+        {(logo || source) && (
+          <div className="flex items-center gap-3">
+            {logo && (
+              <div className="rounded-2xl p-3 flex items-center justify-center" style={{ backgroundColor: '#FFFAF1', border: '1px solid #1D371E22' }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={logo} alt={title} className="h-16 w-auto object-contain" />
+              </div>
+            )}
+
+            {source && (
+              <span
+                className="text-xs font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full"
+                style={{ color: '#1D371E', backgroundColor: '#FFFAF1', border: '1px solid #1D371E22', opacity: 0.85 }}
+              >
+                Data from {source}
+              </span>
+            )}
+          </div>
+        )}
 
         {revenueGoals && (
           <p className="text-sm" style={{ color: '#1D371E', opacity: 0.65 }}>
