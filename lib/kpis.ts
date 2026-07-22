@@ -26,6 +26,11 @@ function inverseMetric(id: string, label: string, value: number, ceiling: number
   return { id, label, value, goal: ceiling, format, percentToGoal, status: getStatus(percentToGoal), inverse: true }
 }
 
+// Display-only metric: shown as a tracked value with no goal or progress bar.
+function displayMetric(id: string, label: string, value: number, format: KpiFormat): KpiMetric {
+  return { id, label, value, goal: 0, format, percentToGoal: 0, status: 'on-track', display: true }
+}
+
 export function computeKpis(data: DashboardData) {
   const { ecommerce: e, hotel: h, restaurant: r, social: s, email: m } = data
   return {
@@ -44,9 +49,13 @@ export function computeKpis(data: DashboardData) {
       metric('avg-check',    'Avg Check Size', r.avgCheckSize, GOALS.averageCheckSize,  'currency'),
     ],
     social: [
-      metric('followers',   'Followers',       s.followers,      GOALS.instagramFollowers, 'number'),
-      metric('conversion',  'Conversion Rate', s.conversionRate, GOALS.conversionRate,     'percent'),
-      metric('engagement',  'Engagement Rate', s.engagementRate, GOALS.engagementRate,     'percent'),
+      metric('ig-followers',  'Instagram Followers',  s.instagramFollowers,  GOALS.instagramFollowers, 'number'),
+      metric('fb-followers',  'Facebook Followers',   s.facebookFollowers,    GOALS.facebookFollowers,  'number'),
+      displayMetric('ad-spend',    'Ad Spend',              s.adSpend,             'currency'),
+      displayMetric('ad-revenue',  'Attributable Revenue',  s.attributableRevenue, 'currency'),
+      displayMetric('ad-roas',     'ROAS',                  s.roas,                'multiplier'),
+      metric('ad-reach',      'Ad Reach',             s.adReach,             GOALS.adReach,            'number'),
+      metric('ctr',           'CTR',                  s.ctr,                 GOALS.ctr,                'percent'),
     ],
     email: [
       metric('email-open',        'Open Rate',            m.openRate,            GOALS.emailOpenRate,           'percent'),

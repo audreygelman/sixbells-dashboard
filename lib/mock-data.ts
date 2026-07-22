@@ -22,9 +22,13 @@ export function getMockData(): DashboardData {
       avgCheckSize: 58,
     },
     social: {
-      followers: 8400,
-      conversionRate: 2.8,
-      engagementRate: 4.2,
+      instagramFollowers: 84000,
+      facebookFollowers: 2400,
+      adSpend: 3500,
+      attributableRevenue: 13000,
+      roas: 3.7,
+      adReach: 90000,
+      ctr: 6.2,
     },
     email: {
       openRate: 41.5,

@@ -1,6 +1,7 @@
 import { getMockData } from '@/lib/mock-data'
 import { getShopifyEcommerce } from '@/lib/shopify'
 import { getKlaviyoEmail } from '@/lib/klaviyo'
+import { getMetaSocial } from '@/lib/meta'
 import { computeKpis } from '@/lib/kpis'
 import { KpiSection } from '@/components/KpiSection'
 import { GOALS } from '@/config/goals'
@@ -9,15 +10,19 @@ export const revalidate = 3600
 
 export default async function Dashboard() {
   const data = getMockData()
-  const [shopify, klaviyo] = await Promise.all([
+  const [shopify, klaviyo, meta] = await Promise.all([
     getShopifyEcommerce(),
     getKlaviyoEmail(),
+    getMetaSocial(),
   ])
   if (shopify) {
     data.ecommerce = shopify
   }
   if (klaviyo) {
     data.email = klaviyo
+  }
+  if (meta) {
+    data.social = meta
   }
   const kpis = computeKpis(data)
   const lastUpdated = new Date(data.lastUpdated).toLocaleString('en-US', {
@@ -45,16 +50,15 @@ export default async function Dashboard() {
       <main className="max-w-7xl mx-auto px-6 py-8 flex flex-col gap-10">
         <KpiSection title="Store" logo="/logo-shop.png" source="Shopify" revenueGoals={{ gross: GOALS.shopifyGrossRevenue, net: GOALS.shopifyNetRevenue }} metrics={kpis.ecommerce} />
         <KpiSection title="Email" logo="/logo-shop.png" source="Klaviyo" metrics={kpis.email} />
+        <KpiSection title="Marketing & Social" logo="/logo-shop.png" source="Meta" metrics={kpis.social} />
 
         {/*
           Hidden until real reporting is connected — currently mock data only.
           Re-enable each section as its integration goes live:
             - Hotel        → MEWS
             - Restaurant   → Toast
-            - Marketing    → Meta / Instagram
         <KpiSection title="Hotel" logo="/logo-hotel.png" revenueGoals={{ gross: GOALS.hotelGrossRevenue, net: GOALS.hotelNetRevenue }} metrics={kpis.hotel} />
         <KpiSection title="Restaurant" logo="/logo-restaurant.png" revenueGoals={{ gross: GOALS.restaurantGrossRevenue, net: GOALS.restaurantNetRevenue }} metrics={kpis.restaurant} />
-        <KpiSection title="Marketing & Social" logo="/logo-shop.png" metrics={kpis.social} />
         */}
       </main>
 

@@ -24,10 +24,12 @@ export const GOALS = {
   restaurantRevenue: 30000,
   averageCheckSize: 65,
 
-  // ── Marketing & Social — Instagram ──────────
-  instagramFollowers: 10000,
-  conversionRate: 3.5,    // percentage
-  engagementRate: 4.0,    // percentage
+  // ── Marketing & Social — Meta (Facebook/Instagram/Ads) ──
+  instagramFollowers: 90000,  // target total (by end of year)
+  facebookFollowers: 3000,    // running goal
+  adReach: 100000,            // monthly ad reach
+  ctr: 6,                     // percentage
+  // Ad Spend, Attributable Revenue and ROAS are tracked without a goal.
 
   // ── Email — Klaviyo ─────────────────────────
   emailOpenRate: 45,             // percentage
